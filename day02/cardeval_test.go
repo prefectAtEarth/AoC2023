@@ -16,6 +16,17 @@ var expectedGames = []Game{
 	{5, []Pull{{6, 3, 1}, {1, 2, 2}}},
 }
 
+var expectedMinCubes = []CubeCounts{
+	{4, 2, 6},
+	{1, 3, 4},
+	{20, 13, 6},
+	{14, 3, 15},
+	{6, 3, 2},
+}
+
+var expectedPowerOfMinCubes = []int{48, 12, 1560, 630, 36}
+var expectedSumOfPowerOfMinCubes = 2286
+
 var expectedIdSum = 8
 
 func TestReadGamesFromFile(t *testing.T) {
@@ -56,6 +67,26 @@ func TestCheckGamePossibility(t *testing.T) {
 	}
 	if impossibleGame == true {
 		t.Fatalf("Game 3 should be impossible")
+	}
+}
+
+func TestGetMinCubesPerColourPerGame(t *testing.T) {
+	_, games := stuff.ScanFile(testdatapath)
+	for index, gameString := range games {
+		game := ParseGameFromString(gameString)
+		minCubes := GetMinCubesPerColourPerGame(game)
+		if !reflect.DeepEqual(minCubes, expectedMinCubes[index]) {
+			t.Fatalf("MinCubes wrong.\nWanted: %d\nGot: %d\n", expectedMinCubes[index], minCubes)
+		}
+	}
+}
+
+func TestSumPowerOfMinCubesPerGame(t *testing.T) {
+	games := ReadGamesFromFile(testdatapath)
+	sum := SumPowerOfMinCube(games)
+
+	if sum != expectedSumOfPowerOfMinCubes {
+		t.Fatalf("Sum Power of MinCubes wrong.\nWanted: %d\nGot: %d\n", sum, expectedSumOfPowerOfMinCubes)
 	}
 }
 

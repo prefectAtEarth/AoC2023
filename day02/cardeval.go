@@ -2,18 +2,19 @@ package day02
 
 import (
 	"aoc2023/stuff"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
 )
 
-type cubeCounts = struct {
+type CubeCounts = struct {
 	red   int
 	green int
 	blue  int
 }
 
-var maxCubes = cubeCounts{12, 13, 14}
+var maxCubes = CubeCounts{12, 13, 14}
 
 type Game = struct {
 	id    int
@@ -80,6 +81,35 @@ func CheckGamePossibility(game Game) bool {
 	return true
 }
 
+func GetMinCubesPerColourPerGame(game Game) CubeCounts {
+	var red, green, blue int
+	for _, pull := range game.Pulls {
+		if red < pull.red {
+			red = pull.red
+		}
+		if green < pull.green {
+			green = pull.green
+		}
+		if blue < pull.blue {
+			blue = pull.blue
+		}
+	}
+	return CubeCounts{red, green, blue}
+}
+
+func SumPowerOfMinCube(games []Game) int {
+	var cubeCounts []CubeCounts
+	for _, game := range games {
+		cubeCounts = append(cubeCounts, GetMinCubesPerColourPerGame(game))
+	}
+	sum := 0
+	for _, minCube := range cubeCounts {
+		minCubePower := minCube.red * minCube.green * minCube.blue
+		sum += minCubePower
+	}
+	return sum
+}
+
 func SumPossibleGameIdsFromFile(fileName string) int {
 	games := ReadGamesFromFile(fileName)
 	var idSum int
@@ -89,4 +119,11 @@ func SumPossibleGameIdsFromFile(fileName string) int {
 		}
 	}
 	return idSum
+}
+
+func Day02Main(filePath string) {
+	idSum := SumPossibleGameIdsFromFile(filePath)
+	fmt.Println("Day02: ID SUM: ", idSum)
+	minCubePowerSum := SumPowerOfMinCube(ReadGamesFromFile(filePath))
+	fmt.Println("Day02: Sum Cube Power: ", minCubePowerSum)
 }

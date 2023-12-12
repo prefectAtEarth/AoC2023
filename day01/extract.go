@@ -24,13 +24,13 @@ func ExtractFirstAndLastIntegers(row string) int {
 		out = append(out, all[0])
 		out = append(out, all[len(all)-1])
 	}
-	
+
 	result, err := strconv.Atoi(strings.Join(out, ""))
 	if err != nil {
 		fmt.Println("error converting out to joined string:", out)
 		return 0
 	}
-	
+
 	return result
 }
 
