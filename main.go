@@ -2,11 +2,9 @@ package main
 
 import (
 	"day02"
-	"fmt"
-	"os"
 )
 
 func main() {
-	idSum := day02.SumPossibleGameIdsFromFile(os.Args[1])
-	fmt.Println("ID SUM: ", idSum)
+    day02DataPath := "../AoC2023_data/day02/input.txt"
+	day02.Day02Main(day02DataPath)
 }
