@@ -9,8 +9,8 @@ import (
 
 type cubeCounts = struct {
 	red   int
-	blue  int
 	green int
+	blue  int
 }
 
 var maxCubes = cubeCounts{12, 13, 14}
