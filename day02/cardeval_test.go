@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+var testdatapath = "../../AoC2023_data/day02/testdata.txt"
+
 var expectedGames = []Game{
 	{1, []Pull{{4, 0, 3}, {1, 2, 6}, {0, 2, 0}}},
 	{2, []Pull{{0, 2, 1}, {1, 3, 4}, {0, 1, 1}}},
@@ -17,7 +19,7 @@ var expectedGames = []Game{
 var expectedIdSum = 8
 
 func TestReadGamesFromFile(t *testing.T) {
-	games := ReadGamesFromFile("testdata.txt")
+	games := ReadGamesFromFile(testdatapath)
 	wantedGames := expectedGames
 
 	if len(games) != len(wantedGames) {
@@ -33,7 +35,7 @@ func TestReadGamesFromFile(t *testing.T) {
 }
 
 func TestParseGameFromString(t *testing.T) {
-	_, games := stuff.ScanFile("testdata.txt")
+	_, games := stuff.ScanFile(testdatapath)
 
 	game := ParseGameFromString(games[0])
 
@@ -43,7 +45,7 @@ func TestParseGameFromString(t *testing.T) {
 }
 
 func TestCheckGamePossibility(t *testing.T) {
-	_, games := stuff.ScanFile("testdata.txt")
+	_, games := stuff.ScanFile(testdatapath)
 	game1 := ParseGameFromString(games[0])
 	game3 := ParseGameFromString(games[2])
 
@@ -58,7 +60,7 @@ func TestCheckGamePossibility(t *testing.T) {
 }
 
 func TestSumPossibleGameIds(t *testing.T) {
-	idSum := SumPossibleGameIdsFromFile("../../AoC2023/day02/testdata.txt")
+	idSum := SumPossibleGameIdsFromFile(testdatapath)
 
 	if idSum != expectedIdSum {
 		t.Fatalf("IdSum wrong: %d", idSum)
