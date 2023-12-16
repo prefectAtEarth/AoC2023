@@ -18,7 +18,7 @@ var expectedPartNums = []PartNumber{
 	{592, 2, 4},
 	{755, 6, 8},
 	{664, 1, 3},
-	{598, 6, 8},
+	{598, 5, 7},
 }
 
 func TestParseFileToPartRows(t *testing.T) {
