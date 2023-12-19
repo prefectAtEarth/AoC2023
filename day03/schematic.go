@@ -8,32 +8,35 @@ import (
 	"unicode"
 )
 
-type PartRow []PartNumber
-
-type SymbolRow []PartSymbol
-
-type PartNumber struct {
+type Number struct {
 	value      int
 	startIndex int
 	endIndex   int
+	rowIndex   int
 }
 
-type PartSymbol struct {
+type Symbol struct {
 	value      string
 	startIndex int
+	rowIndex   int
 }
 
 type Schematic struct {
-	PartRows   []PartRow
-	SymbolRows []SymbolRow
+	Numbers []Number
+	Symbols []Symbol
 }
 
-func (schematic *Schematic) addPartRow(partRow PartRow) {
-	schematic.PartRows = append(schematic.PartRows, partRow)
+type IndexRange struct {
+	start int
+	end   int
 }
 
-func (schematic *Schematic) addSymbolRow(symbolRow SymbolRow) {
-	schematic.SymbolRows = append(schematic.SymbolRows, symbolRow)
+func (schematic *Schematic) addPart(number Number) {
+	schematic.Numbers = append(schematic.Numbers, number)
+}
+
+func (schematic *Schematic) addSymbol(symbol Symbol) {
+	schematic.Symbols = append(schematic.Symbols, symbol)
 }
 
 func ParseFileToSchematic(filepath string) Schematic {
@@ -44,9 +47,7 @@ func ParseFileToSchematic(filepath string) Schematic {
 		log.Fatalf("Error reading file %s\n", filepath)
 	}
 
-	for _, row := range rows {
-		partNums := []PartNumber{}
-		partSyms := []PartSymbol{}
+	for rowIndex, row := range rows {
 		numStart := -1
 		numstrings := []string{}
 		for index, char := range row {
@@ -57,19 +58,41 @@ func ParseFileToSchematic(filepath string) Schematic {
 				numstrings = append(numstrings, string(char))
 			} else {
 				if string(char) != "." {
-					partSyms = append(partSyms, PartSymbol{string(char), index})
+					schematic.addSymbol(Symbol{string(char), index, rowIndex})
 				}
 				if len(numstrings) > 0 {
 					stringNum, _ := strconv.Atoi(strings.Join(numstrings[:], ""))
-					partNums = append(partNums, PartNumber{stringNum, numStart, numStart + len(numstrings) - 1})
+					schematic.addPart(Number{stringNum, numStart, numStart + len(numstrings) - 1, rowIndex})
 					numstrings = nil
 					numStart = -1
 				}
 			}
 		}
-
-		schematic.addPartRow(partNums)
-		schematic.addSymbolRow(partSyms)
 	}
 	return schematic
+}
+
+func HasSymbolicNeighbour(schematic Schematic) []int {
+	var partNumsWithNeighbours = []int{}
+	for _, part := range schematic.Numbers {
+		for _, sym := range schematic.Symbols {
+			partFence := IndexRange{part.startIndex - 1, part.endIndex + 1}
+			if sym.rowIndex-1 == part.rowIndex || sym.rowIndex == part.rowIndex || sym.rowIndex+1 == part.rowIndex {
+				hasNeighbour := sym.startIndex >= partFence.start && sym.startIndex <= partFence.end
+				if hasNeighbour {
+					partNumsWithNeighbours = append(partNumsWithNeighbours, part.value)
+					break
+				}
+			}
+		}
+	}
+	return partNumsWithNeighbours
+}
+
+func CalculatePartNumSum(partNumbers []int) int {
+	var sum int
+	for _, partNum := range partNumbers {
+		sum += partNum
+	}
+	return sum
 }
