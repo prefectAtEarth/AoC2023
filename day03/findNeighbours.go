@@ -65,14 +65,25 @@ func ReadParts(lines []string) ([]PartNumber, []PartMarker) {
 	return parts, marker
 }
 
-func FilterParts(parts []PartNumber, lines []string) []PartNumber {
+func FilterParts(parts []PartNumber, partMarker []PartMarker, lines []string) []PartNumber {
 	var filteredParts []PartNumber
 	for _, part := range parts {
-		if part.hasNeighbourSymbol(part.lineNumber, lines) {
+		if part.hasNeighbourSymbol(partMarker, lines) {
 			filteredParts = append(filteredParts, part)
 		}
 	}
 	return filteredParts
+}
+
+func (part PartNumber) hasNeighbourSymbol(partmarker []PartMarker, lines []string) bool {
+	for _, marker := range partmarker {
+		if marker.lineNumber >= part.lineNumber-1 && marker.lineNumber <= part.lineNumber+1 {
+			if (marker.index >= part.startIndex-1) && (marker.index <= part.endIndex+1) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func SumParts(parts []PartNumber) int {
@@ -93,11 +104,11 @@ func IsPartMarker(symbol rune) bool {
 	}
 }
 
-func (partNumber PartNumber) hasNeighbourSymbol(currentLine int, lines []string) bool {
+func (partNumber PartNumber) hasNeighbourSymbolOld(lines []string) bool {
 	if len(lines) < 0 {
 		log.Fatalf("Run ReadLines first")
 	}
-	previousLine := getPreviousLine(currentLine, lines)
+	previousLine := getPreviousLine(partNumber.lineNumber, lines)
 	var startIndex int
 	if partNumber.startIndex-1 < 0 {
 		startIndex = 0
@@ -105,8 +116,8 @@ func (partNumber PartNumber) hasNeighbourSymbol(currentLine int, lines []string)
 		startIndex = partNumber.startIndex - 1
 	}
 	var endIndex int
-	if partNumber.endIndex+1 > len(lines[currentLine]) {
-		endIndex = len(lines[currentLine]) - 1
+	if partNumber.endIndex+1 > len(lines[partNumber.lineNumber]) {
+		endIndex = len(lines[partNumber.lineNumber]) - 1
 	} else {
 		endIndex = partNumber.endIndex + 1
 	}
@@ -117,7 +128,7 @@ func (partNumber PartNumber) hasNeighbourSymbol(currentLine int, lines []string)
 			}
 		}
 	}
-	followingLine := getFollowingLine(currentLine, lines)
+	followingLine := getFollowingLine(partNumber.lineNumber, lines)
 	if len(followingLine) > 0 {
 		for _, symbol := range followingLine[startIndex : endIndex+1] {
 			if IsPartMarker(symbol) {
@@ -125,7 +136,7 @@ func (partNumber PartNumber) hasNeighbourSymbol(currentLine int, lines []string)
 			}
 		}
 	}
-	for _, symbol := range lines[currentLine][startIndex : endIndex+1] {
+	for _, symbol := range lines[partNumber.lineNumber][startIndex : endIndex+1] {
 		if IsPartMarker(symbol) {
 			return true
 		}
@@ -159,8 +170,8 @@ func IsDigit(c rune) bool {
 
 func Day03Main(filepath string) int {
 	lines := ReadLines(filepath)
-	parts, _ := ReadParts(lines)
-	filtered := FilterParts(parts, lines)
+	parts, marker := ReadParts(lines)
+	filtered := FilterParts(parts, marker, lines)
 	sum := SumParts(filtered)
 	println("PartSum:", sum)
 	return sum
