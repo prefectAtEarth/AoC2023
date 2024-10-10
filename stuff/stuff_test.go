@@ -2,10 +2,10 @@ package stuff
 
 import "testing"
 
-func TestScanFile(t* testing.T) {
+func TestScanFile(t *testing.T) {
 
 	err, result := ScanFile("stuff_testdata.txt")
-	wantLines := []string {
+	wantLines := []string{
 		"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam",
 		"no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy",
 	}

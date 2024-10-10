@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-var testdatapath = "../../AoC2023_data/day02/testdata.txt"
+var testdatapath = "../data/day02_test.txt"
 
 var expectedGames = []Game{
 	{1, []Pull{{4, 0, 3}, {1, 2, 6}, {0, 2, 0}}},
@@ -24,7 +24,7 @@ var expectedMinCubes = []CubeCounts{
 	{6, 3, 2},
 }
 
-var expectedPowerOfMinCubes = []int {48, 12, 1560, 630, 36}
+var expectedPowerOfMinCubes = []int{48, 12, 1560, 630, 36}
 var expectedSumOfPowerOfMinCubes = 2286
 
 var expectedIdSum = 8
@@ -72,13 +72,13 @@ func TestCheckGamePossibility(t *testing.T) {
 
 func TestGetMinCubesPerColourPerGame(t *testing.T) {
 	_, games := stuff.ScanFile(testdatapath)
-	for index,gameString := range games {
+	for index, gameString := range games {
 		game := ParseGameFromString(gameString)
 		minCubes := GetMinCubesPerColourPerGame(game)
 		if !reflect.DeepEqual(minCubes, expectedMinCubes[index]) {
 			t.Fatalf("MinCubes wrong.\nWanted: %d\nGot: %d\n", expectedMinCubes[index], minCubes)
 		}
-	}	
+	}
 }
 
 func TestSumPowerOfMinCubesPerGame(t *testing.T) {

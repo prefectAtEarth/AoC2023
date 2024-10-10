@@ -2,10 +2,10 @@ package day02
 
 import (
 	"aoc2023/stuff"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
-	"fmt"
 )
 
 type CubeCounts = struct {
@@ -99,11 +99,11 @@ func GetMinCubesPerColourPerGame(game Game) CubeCounts {
 
 func SumPowerOfMinCube(games []Game) int {
 	var cubeCounts []CubeCounts
-	for _,game := range games {
+	for _, game := range games {
 		cubeCounts = append(cubeCounts, GetMinCubesPerColourPerGame(game))
 	}
 	sum := 0
-	for _,minCube := range cubeCounts {
+	for _, minCube := range cubeCounts {
 		minCubePower := minCube.red * minCube.green * minCube.blue
 		sum += minCubePower
 	}
